@@ -36,6 +36,8 @@ class Submit(db.Model):
     artistname = db.Column(db.String(64), index=True, unique=False)
     artistemail = db.Column(db.String(120), index=True, unique=False)
     trackname = db.Column(db.String(120), index=True, unique=False)
+    datetime = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    
 
     def __repr__(self):
         return '<Title {} Description {} Artistname {} Artistemail {} Trackname {}>'.format(self.title,
