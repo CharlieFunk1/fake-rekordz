@@ -11,8 +11,11 @@
       <div>
 	Fake Rekords:
 	<a href="{{ url_for('index') }}">Home</a>
+	<a href="{{ url_for('listen') }}">Listen</a>
+	<a href="{{ url_for('submit') }}">Submit</a>
+	<a href="{{ url_for('contact') }}">Contact</a>
 	{% if current_user.is_anonymous %}
-        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('login') }}">Admin</a>
         {% else %}
         <a href="{{ url_for('logout') }}">Logout</a>
         {% endif %}

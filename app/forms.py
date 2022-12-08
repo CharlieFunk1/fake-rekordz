@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length, DataRequired
 from app.models import User
 
 
@@ -28,3 +29,19 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+
+class ContactForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    message = TextAreaField('Message', validators=[DataRequired(), Length(min=1, max=500)])
+    submit = SubmitField('Submit')
+
+
+class SubmitForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+    artistname = StringField('Artist Name', validators=[DataRequired()])
+    artistemail = StringField('Artist Email', validators=[DataRequired(), Email()])
+    audiofile = FileField('Audio File', validators=[FileRequired(), FileAllowed(['mp3'], 'mp3 only please!')])
+    submit = SubmitField('Submit')
+    

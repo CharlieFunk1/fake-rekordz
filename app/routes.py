@@ -1,9 +1,12 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
+from werkzeug.utils import secure_filename
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, ContactForm, SubmitForm
+from app.models import User, Contact, Submit
+from datetime import datetime
+import os
 
 
 @app.route('/')
@@ -36,11 +39,10 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 @login_required
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        user = User(username=form.username.data,
+                    email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -50,5 +52,44 @@ def register():
 
 @app.route('/private')
 def private():
-    return render_template('private.html', title='Private')
+    contact = Contact.query.all()
+    submit = Submit.query.all()
+    return render_template('private.html', title='Private', contact=contact, submit=submit)
 
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    form = ContactForm()
+    if form.validate_on_submit():
+        contact = Contact(name=form.name.data,
+                          email=form.email.data,
+                          message=form.message.data)
+        db.session.add(contact)
+        db.session.commit()
+        flash('Message submitted')
+        return redirect(url_for('index')) 
+    return render_template('contact.html', title='Contact', form=form)
+    
+@app.route('/listen')
+def listen():
+    return render_template('listen.html', title="Listen")
+
+@app.route("/submit", methods=['GET', 'POST'])
+def submit():
+    form = SubmitForm()
+    if form.validate_on_submit():
+        static_dir = os.path.join(
+            os.path.dirname(app.instance_path), 'app/static'
+        )
+        a = form.audiofile.data
+        audiofile = secure_filename(a.filename)
+        a.save(os.path.join(static_dir, 'musictemp', audiofile))
+        submit = Submit(title=form.title.data,
+                        description=form.description.data,
+                        artistname=form.artistname.data,
+                        artistemail=form.artistemail.data,
+                        trackname=audiofile)
+        db.session.add(submit)
+        db.session.commit()
+        flash("Audio saved successfully.")
+        return render_template('submit.html', title="Submit", form=form)
+    return render_template('submit.html', title="Submit", form=form)

@@ -21,3 +21,25 @@ class User(UserMixin, db.Model):
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True, unique=False)
+    email = db.Column(db.String(120), index=True, unique=False)
+    message = db.Column(db.String(500), index=False, unique=False)
+    datetime = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+class Submit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64), index=True, unique=False)
+    description = db.Column(db.String(120), index=False, unique=False)
+    artistname = db.Column(db.String(64), index=True, unique=False)
+    artistemail = db.Column(db.String(120), index=True, unique=False)
+    trackname = db.Column(db.String(120), index=True, unique=False)
+
+    def __repr__(self):
+        return '<Title {} Description {} Artistname {} Artistemail {} Trackname {}>'.format(self.title,
+                                                                                            self.description,
+                                                                                            self.artistname,
+                                                                                            self.artistemail,
+                                                                                            self.trackname)
