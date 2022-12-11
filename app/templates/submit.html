@@ -2,15 +2,6 @@
 
 {% block content %}
 <h1>Submit a track or mix!</h1>
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-        <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
 <form action="" enctype="multipart/form-data" method="POST" novalidate>
         {{ form.hidden_tag() }}
         <p>
@@ -45,6 +36,13 @@
             {{ form.audiofile.label }}<br>
             {{ form.audiofile(size=64) }}<br>
             {% for error in form.audiofile.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.albumart.label }}<br>
+            {{ form.albumart(size=64) }}<br>
+            {% for error in form.albumart.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>

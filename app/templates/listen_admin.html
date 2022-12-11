@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1>Listen to these tracks!</h1>
+    <a href="{{ url_for('private') }}">Back</a>
     {% for l in listen %}
       <p>Artist: {{ l.artistname }}</p>
       <p>Title: {{ l.title }}</p>
@@ -10,6 +11,7 @@
       <audio controls="controls" src="static/musictemp/{{ l.trackname }}">
         Your browser does not support the HTML5 Audio element.
       </audio>
+      <a href="/private_delete_listen_go/{{ l.id }}">Delete</a>
     {% endfor %}
 
 {% endblock %}    

@@ -4,7 +4,7 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, ContactForm, SubmitForm
-from app.models import User, Contact, Submit
+from app.models import User, Contact, Submit, Listen
 from datetime import datetime
 import os
 
@@ -84,6 +84,7 @@ def private_contact_delete(cid):
 def private_submit_delete(cid):
     s = Submit.query.get(cid)
     os.remove('app/static/musictemp/' + s.trackname)
+    os.remove('app/static/albumart/' +s.albumart)
     db.session.delete(s)
     db.session.commit()
     return redirect(url_for('private'))
@@ -92,10 +93,34 @@ def private_submit_delete(cid):
 @login_required
 def private_move_submit(cid):
     s = Submit.query.get(cid)
+    listen = Listen(title = s.title,
+                    description = s.description,
+                    artistname = s.artistname,
+                    artistemail = s.artistemail,
+                    trackname = s.trackname,
+                    albumart = s.albumart)
+    db.session.add(listen)
+    db.session.commit()
     os.rename('app/static/musictemp/' + s.trackname, 'app/static/music/' + s.trackname)
     db.session.delete(s)
     db.session.commit()
     return redirect(url_for('private'))
+
+@app.route('/private_delete_listen', methods=['GET', 'POST'])
+@login_required
+def private_delete_listen():
+    listen = Listen.query.all()
+    return render_template('listen_admin.html', title='listen_admin', listen=listen)
+
+@app.route('/private_delete_listen_go/<cid>', methods=['GET', 'POST'])
+@login_required
+def private_delete_listen_go(cid):
+    l = Listen.query.get(cid)
+    os.remove('app/static/music/' + l.trackname)
+    os.remove('app/static/albumart/' + l.albumart)
+    db.session.delete(l)
+    db.session.commit()
+    return redirect(url_for('private_delete_listen'))
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -112,7 +137,8 @@ def contact():
     
 @app.route('/listen')
 def listen():
-    return render_template('listen.html', title="Listen")
+    listen = Listen.query.all()
+    return render_template('listen.html', title="Listen", listen=listen)
 
 @app.route("/submit", methods=['GET', 'POST'])
 def submit():
@@ -124,11 +150,15 @@ def submit():
         a = form.audiofile.data
         audiofile = secure_filename(a.filename)
         a.save(os.path.join(static_dir, 'musictemp', audiofile))
+        p = form.albumart.data
+        albumartpic = secure_filename(p.filename)
+        p.save(os.path.join(static_dir, 'albumart', albumartpic))
         submit = Submit(title=form.title.data,
                         description=form.description.data,
                         artistname=form.artistname.data,
                         artistemail=form.artistemail.data,
-                        trackname=audiofile)
+                        trackname=audiofile,
+                        albumart=albumartpic)
         db.session.add(submit)
         db.session.commit()
         flash("Audio saved successfully.")

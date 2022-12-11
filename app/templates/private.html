@@ -4,6 +4,7 @@
   <h1>Hi, {{ current_user.username }}!</h1>
   <p>Add a new <a href="{{ url_for('register') }}">Admin</a></p>
   <p><a href="{{ url_for('private_delete_admin') }}">Delete</a> an Admin</p>
+  <p><a href="{{ url_for('private_delete_listen')}}">Manage</a> Listen Page</p>
   <h2>Messages Recieved</h2>
     {% for c in contact %}
       <p>Message from: {{ c.name }} Email: {{ c.email }} On: {{ c.datetime }}</p>
@@ -16,6 +17,7 @@
       <p>Title: {{ s.title }}</p>
       <p>Description: {{ s.description }}</p>
       <p>File Name: {{ s.trackname }}</p>
+      <img src="app/static/albumart/{{ s.albumart}}" />
       <audio controls="controls" src="static/musictemp/{{ s.trackname }}">
         Your browser does not support the HTML5 Audio element.
       </audio>
