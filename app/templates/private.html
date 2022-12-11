@@ -2,20 +2,27 @@
 
 {% block content %}
   <h1>Hi, {{ current_user.username }}!</h1>
-    <p>Add a new <a href="{{ url_for('register') }}">Admin</a></p>
+  <p>Add a new <a href="{{ url_for('register') }}">Admin</a></p>
+  <p><a href="{{ url_for('private_delete_admin') }}">Delete</a> an Admin</p>
   <h2>Messages Recieved</h2>
     {% for c in contact %}
-      <p>Message from: {{ c.name }} Email: {{ c.email }} On: {{ c.datetime }}</p>>
-      <p>M: {{ c.message }}</p>>
+      <p>Message from: {{ c.name }} Email: {{ c.email }} On: {{ c.datetime }}</p>
+      <p>M: {{ c.message }}</p>
+      <a href="/private_contact_delete/{{ c.id }}">Delete</a>
     {% endfor %}
   <h2>Submissions Recieved</h2>
     {% for s in submit %}
-      <p>Message from: {{ s.artistname }} Email: {{ s.artistemail }} On: {{ s.datetime }}</p>>
-      <p>Title: {{ s.title }}</p>>
+      <p>Message from: {{ s.artistname }} Email: {{ s.artistemail }} On: {{ s.datetime }}</p>
+      <p>Title: {{ s.title }}</p>
       <p>Description: {{ s.description }}</p>
       <p>File Name: {{ s.trackname }}</p>
       <audio controls="controls" src="static/musictemp/{{ s.trackname }}">
         Your browser does not support the HTML5 Audio element.
       </audio>
+      <br>
+      <a href="/private_submit_delete/{{ s.id }}">Delete</a>
+      <br>
+      <a href="/private_move_submit/{{ s.id }}">Move to Listen</a>
+      
     {% endfor %}
 {% endblock %}    

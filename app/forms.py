@@ -44,4 +44,4 @@ class SubmitForm(FlaskForm):
     artistemail = StringField('Artist Email', validators=[DataRequired(), Email()])
     audiofile = FileField('Audio File', validators=[FileRequired(), FileAllowed(['mp3'], 'mp3 only please!')])
     submit = SubmitField('Submit')
-    
+

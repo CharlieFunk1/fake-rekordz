@@ -6,5 +6,4 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    UPLOADED_AUDIO_DEST = "app/static/musictemp"
-    MAX_CONTENT_LENGTH = 20 * 1024 * 1024  #20 MB max
+    MAX_CONTENT_LENGTH = 120 * 1024 * 1024  #120 MB max

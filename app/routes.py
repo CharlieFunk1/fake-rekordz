@@ -50,11 +50,52 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-@app.route('/private')
+@app.route('/private', methods=['GET', 'POST'])
+@login_required
 def private():
     contact = Contact.query.all()
     submit = Submit.query.all()
-    return render_template('private.html', title='Private', contact=contact, submit=submit)
+    return render_template('private.html', title='Private', contact=contact, submit=submit,)
+
+@app.route('/private_delete_admin', methods=['GET', 'POST'])
+@login_required
+def private_delete_admin():
+    user = User.query.all()
+    return render_template('private_delete_admin.html', title='private_delete_admin', user=user)
+
+@app.route('/private_delete_admin_go/<uid>', methods=['GET', 'POST'])
+@login_required
+def private_delete_admin_go(uid):
+    u = User.query.get(uid)
+    db.session.delete(u)
+    db.session.commit()
+    return redirect(url_for('private_delete_admin'))
+
+@app.route('/private_contact_delete/<cid>', methods=['GET', 'POST'])
+@login_required
+def private_contact_delete(cid):
+    c = Contact.query.get(cid)
+    db.session.delete(c)
+    db.session.commit()
+    return redirect(url_for('private'))
+
+@app.route('/private_submit_delete/<cid>', methods=['GET', 'POST'])
+@login_required
+def private_submit_delete(cid):
+    s = Submit.query.get(cid)
+    os.remove('app/static/musictemp/' + s.trackname)
+    db.session.delete(s)
+    db.session.commit()
+    return redirect(url_for('private'))
+
+@app.route('/private_move_submit/<cid>', methods=['GET', 'POST'])
+@login_required
+def private_move_submit(cid):
+    s = Submit.query.get(cid)
+    os.rename('app/static/musictemp/' + s.trackname, 'app/static/music/' + s.trackname)
+    db.session.delete(s)
+    db.session.commit()
+    return redirect(url_for('private'))
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
