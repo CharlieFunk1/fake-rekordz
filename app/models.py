@@ -41,11 +41,13 @@ class Submit(db.Model):
     
 
     def __repr__(self):
-        return '<Title {} Description {} Artistname {} Artistemail {} Trackname {}>'.format(self.title,
+        return '<Title {} Description {} Artistname {} Artistemail {} Trackname {} Albumart {} Datetime {}>'.format(self.title,
                                                                                             self.description,
                                                                                             self.artistname,
                                                                                             self.artistemail,
-                                                                                            self.trackname)
+                                                                                            self.trackname,
+                                                                                            self.albumart,
+                                                                                            self.datetime)
 
 class Listen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -59,8 +61,10 @@ class Listen(db.Model):
     
 
     def __repr__(self):
-        return '<Title {} Description {} Artistname {} Artistemail {} Trackname {}>'.format(self.title,
+        return '<Title {} Description {} Artistname {} Artistemail {} Trackname {} Albumart {} Datetime {}>'.format(self.title,
                                                                                             self.description,
                                                                                             self.artistname,
                                                                                             self.artistemail,
-                                                                                            self.trackname)
+                                                                                            self.trackname,
+                                                                                            self.albumart,
+                                                                                            self.datetime)
